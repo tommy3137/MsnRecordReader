@@ -24,7 +24,7 @@ namespace MSNrecordReader.Controllers
             _uploadservice = UploadService;
         }
 
-        public IActionResult UploadXls(List<IFormFile> files)
+        public IActionResult UploadXml(List<IFormFile> files)
         {
             List<MsnViewModel> viewResult = null;
             foreach (var item in files)
@@ -33,7 +33,7 @@ namespace MSNrecordReader.Controllers
                 {
                     if (Path.GetExtension(item.FileName) == ".xml")
                     {
-                        viewResult = _uploadservice.UploadXls(item);
+                        viewResult = _uploadservice.UploadXml(item);
                     }
                 }
             }

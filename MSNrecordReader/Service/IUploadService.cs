@@ -9,6 +9,6 @@ namespace MSNrecordReader.Service
 {
     public interface IUploadService
     {
-        List<MsnViewModel> UploadXls(IFormFile file);
+        List<MsnViewModel> UploadXml(IFormFile file);
     }
 }

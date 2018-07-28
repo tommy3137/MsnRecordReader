@@ -12,7 +12,7 @@ namespace MSNrecordReader.Service
 {
     public class UploadService : IUploadService
     {
-        public List<MsnViewModel> UploadXls(IFormFile file)
+        public List<MsnViewModel> UploadXml(IFormFile file)
         {
             List<MsnViewModel> result = new List<MsnViewModel>();
 
