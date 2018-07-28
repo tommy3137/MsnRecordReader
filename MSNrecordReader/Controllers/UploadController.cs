@@ -10,54 +10,37 @@ using Microsoft.AspNetCore.Hosting;
 using MSNrecordReader.Models;
 using System.Xml;
 using Newtonsoft.Json;
+using MSNrecordReader.Service;
 
 namespace MSNrecordReader.Controllers
 {
     [Route("api/[controller]")]
     public class UploadController : Controller
     {
-        private readonly string _uploadFolder;
+        private readonly IUploadService _uploadservice;
 
-        public UploadController (IHostingEnvironment hostingEnvironment)
+        public UploadController(IUploadService UploadService)
         {
-            _uploadFolder = $"{hostingEnvironment.WebRootPath}\\upload";
+            _uploadservice = UploadService;
         }
 
-        public IActionResult Post(List<IFormFile> files)
+        public IActionResult UploadXls(List<IFormFile> files)
         {
-            var size = files.Sum(x => x.Length);
-            string jsonText = string.Empty;
-            List<MsnViewModel> viewResult = new List<MsnViewModel>();
+            List<MsnViewModel> viewResult = null;
             foreach (var item in files)
             {
                 if (item.Length > 0)
                 {
                     if (Path.GetExtension(item.FileName) == ".xml")
                     {
-                        try
-                        {
-                            XElement root = XElement.Load(item.OpenReadStream());
-                            XmlDocument xmlDoc = new XmlDocument();
-                            xmlDoc.LoadXml(root.ToString());
-                            XmlNode resultLog = xmlDoc.SelectSingleNode("/Log");
-                            jsonText = JsonConvert.SerializeXmlNode(resultLog).Replace("@", "").Replace("#","");
-                            MsnParseModel Result = JsonConvert.DeserializeObject<MsnParseModel>(jsonText);
-                            foreach (var obj in Result.LOG.MESSAGE)
-                            {
-                                viewResult.Add(new MsnViewModel { Date = obj.DATE, Time = obj.TIME, From = obj.FROM.USER.FriendlyName, Text = obj.TEXT.text });
-                            }
-
-                        }
-                        catch (Exception ex)
-                        {
-                            ex.ToString();
-                        }
+                        viewResult = _uploadservice.UploadXls(item);
                     }
                 }
             }
-            return Json( viewResult );
+           
+            return Json(viewResult);
+         
         }
-
 
     }
 }
